@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
+import { useDispatch, useSelector } from "react-redux";
 
 import CardSection from '../components/CardSection';
 import Card from '../components/Card';
@@ -7,16 +8,24 @@ import TextField from '../components/TextField';
 import Button from '../components/Button';
 import { ValidateMobile } from '../lib/Validation';
 import Error from '../components/Error';
+import { saveData } from '../redux/Action/ActionCreator';
 
 const Login = (props) => {
 
-  const [txtVal, setTxtVal] = useState('');
+  const data = useSelector(state => state.data);
+  const [txtVal, setTxtVal] = useState(data.MobileNo ? data.MobileNo : '');
   const [error, setError] = useState(null);
+  
+  const dispatch = useDispatch();
 
   const checkForValidation = () => {
     if (!txtVal) setError('Please enter the mobile number');
     else if (!ValidateMobile(txtVal)) setError('Please enter valid mobile number');
-    else props.navigation.navigate('AccounCreation');
+    else {
+      //To store the value in redux store
+      dispatch(saveData({MobileNo: txtVal}));
+      props.navigation.navigate('AccounCreation');
+    }
   }
 
   const onMobileNumberChange = (val) => {
@@ -34,10 +43,10 @@ const Login = (props) => {
         <View style={styles.line} />
         <View style={styles.childCont}>
           <Text style={styles.txt}>Mobile Number<Text style={{ color: 'red' }}>*</Text></Text>
-          <TextField val={txtVal} onChange={changeTxtValue} maxLength={10} />
+          <TextField val={txtVal} onChange={onMobileNumberChange} maxLength={10} />
           <Error txt={error} />
         </View>
-        <Button buttonText='Continue' onPress={onMobileNumberChange} />
+        <Button buttonText='Continue' onPress={checkForValidation} />
       </Card>
     </CardSection>
   );

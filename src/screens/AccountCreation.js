@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
+import { useDispatch } from "react-redux";
 
 import CardSection from '../components/CardSection';
 import Card from '../components/Card';
@@ -7,6 +8,7 @@ import TextField from '../components/TextField';
 import Button from '../components/Button';
 import { ValidateUPIId } from '../lib/Validation';
 import Error from '../components/Error';
+import { saveData } from '../redux/Action/ActionCreator';
 
 const AccounCreation = (props) => {
 
@@ -17,6 +19,7 @@ const AccounCreation = (props) => {
     nameErr: null,
     UPIErr: null
   });
+  const dispatch = useDispatch();
 
   const checkForValidation = () => {
     let newValues = { ...errors };
@@ -26,7 +29,11 @@ const AccounCreation = (props) => {
     if (!UPIId) newValues.UPIErr = 'Please enter UPI ID';
     else if (!ValidateUPIId(UPIId)) newValues.UPIErr = 'Please enter valid UPI id';
 
-    if (!newValues.nameErr && !newValues.UPIErr) props.navigation.navigate('Details');
+    if (!newValues.nameErr && !newValues.UPIErr) {
+      //To store the value in redux store
+      dispatch(saveData({Profession: profession ? 'Professional' : 'Student', Name: name, UPIid: UPIId }));
+      props.navigation.navigate('Details');
+    }
     else setErrors(newValues);
   }
 
@@ -46,7 +53,7 @@ const AccounCreation = (props) => {
 
   return (
     <CardSection>
-      <Text style={{ textAlign: 'left', marginTop: 10 }}>setup your GoDutch account</Text>
+      <Text style={styles.headerTxt}>setup your GoDutch account</Text>
       <Card>
         <Image style={styles.img} source={require('../assets/images/Logo.png')} />
         <View style={[styles.childCont, { marginTop: 30 }]}>
@@ -91,6 +98,9 @@ const styles = StyleSheet.create({
   },
   txt: {
     fontSize: 13
+  },
+  headerTxt: {
+    textAlign: 'left', marginTop: 10, marginBottom: 5, width: '100%' 
   }
 });
 
