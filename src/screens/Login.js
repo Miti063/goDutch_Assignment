@@ -19,7 +19,7 @@ const Login = (props) => {
     else props.navigation.navigate('AccounCreation');
   }
 
-  const changeTxtValue = (val) => {
+  const onMobileNumberChange = (val) => {
     setTxtVal(val);
     setError(null);
   }
@@ -37,7 +37,7 @@ const Login = (props) => {
           <TextField val={txtVal} onChange={changeTxtValue} maxLength={10} />
           <Error txt={error} />
         </View>
-        <Button buttonText='Continue' onPress={checkForValidation} />
+        <Button buttonText='Continue' onPress={onMobileNumberChange} />
       </Card>
     </CardSection>
   );
